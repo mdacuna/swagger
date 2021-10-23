@@ -1,0 +1,165 @@
+openapi: 3.0.0
+info:
+  title: Documentacion de APIRest con Swagger
+  description: APIRest Documentacion
+  contact:
+    email: mel.acuna@uao.edu.co
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+- url: https://virtserver.swaggerhub.com/mdacuna/ApiRest/1.0.0
+  description: SwaggerHub API Auto Mocking
+- url: https://192.168.100.3/books
+  description: SwaggerHub API Auto Mocking
+tags:
+- name: Listar libros
+  description: Obtener lista de los libros
+- name: Listar libro por ID
+  description: Obtener libro por ID
+- name: Agregar libro
+  description: Agregar nuevo libro
+- name: Editar libro
+  description: Editar parametros de un libro
+- name: Eliminar libro
+  description: Eliminar un libro de la lista
+paths:
+  /books:
+    get:
+      tags:
+      - Listar libros
+      summary: Obtener lista de libros
+      description: |
+        You can search for
+        available books in the system
+      operationId: search_books
+      responses:
+        "200":
+          description: Retorna la lista de los libros
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BookListResponse'
+                x-content-type: application/json
+        "400":
+          description: bad input parameter
+      x-openapi-router-controller: swagger_server.controllers.listar_libros_controller
+    post:
+      tags:
+      - Agregar libro
+      summary: Agregar un libro a la lista
+      description: Adds an item to the system
+      operationId: agregar_libro
+      requestBody:
+        description: Formato para agregar libro
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookResponse'
+      responses:
+        "201":
+          description: Libro creado
+        "400":
+          description: "invalid input, object invalid"
+      x-openapi-router-controller: swagger_server.controllers.agregar_libro_controller
+  /books/2:
+    get:
+      tags:
+      - Listar libro por ID
+      summary: Escribir ID del libro
+      description: |
+        You can search for
+        available books in the system
+      operationId: search_book_id
+      responses:
+        "200":
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BookResponse'
+                x-content-type: application/json
+        "404":
+          description: bad input parameter
+      x-openapi-router-controller: swagger_server.controllers.listar_libro_por_id_controller
+    put:
+      tags:
+      - Editar libro
+      summary: Proporcionar la ID del libro a editar
+      description: Editar o agregar nuevas caracteristicas a un libro de la lista
+      operationId: edit_book
+      requestBody:
+        description: Formato para editar un libro
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookResponse'
+      responses:
+        "404":
+          description: Invalid parameter
+      x-openapi-router-controller: swagger_server.controllers.editar_libro_controller
+    delete:
+      tags:
+      - Eliminar libro
+      summary: Poner ID del libro a eliminar
+      description: Eliminar un libro de la lista por medio del ID
+      operationId: delete_book
+      responses:
+        "404":
+          description: Invalid ID supplied
+      x-openapi-router-controller: swagger_server.controllers.eliminar_libro_controller
+components:
+  schemas:
+    BookListResponse:
+      required:
+      - author
+      - description
+      - id
+      - title
+      type: object
+      properties:
+        id:
+          type: string
+          example: "3,1,2"
+        title:
+          type: string
+          example: ready player one
+        description:
+          type: string
+          example: Interesante
+        author:
+          type: string
+          example: Pepito Perez
+      example:
+        author: Pepito Perez
+        description: Interesante
+        id: "3,1,2"
+        title: ready player one
+    BookResponse:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          type: string
+          example: "2"
+        title:
+          type: string
+          example: El coronel no tiene quien le escriba
+        description:
+          type: string
+          example: Interesante
+        author:
+          type: string
+          example: Gabo
+      example:
+        author: Gabo
+        description: Interesante
+        id: "2"
+        title: El coronel no tiene quien le escriba
+
